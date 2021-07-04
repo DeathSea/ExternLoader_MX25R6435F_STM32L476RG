@@ -1,0 +1,37 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:\\tools\\gcc-arm-none-eabi-9-2020-q2-update-win32\\arm-none-eabi\\include"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32L476xx",
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "LINUX"
+            ],
+            "windowsSdkVersion": "10.0.17763.0",
+            "compilerPath": "d:\\tools\\gcc-arm-none-eabi-9-2020-q2-update-win32\\bin\\arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-mfpu=fpv4-sp-d16",
+                "-mcpu=cortex-m4",
+                "-mfloat-abi=hard",
+                "-mthumb",
+                "-Wall",
+                "-fdata-sections",
+                "-ffunction-sections"
+            ],
+            "browse": {
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            }
+        }
+    ],
+    "version": 4
+}
