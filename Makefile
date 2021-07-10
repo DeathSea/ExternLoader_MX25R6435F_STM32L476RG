@@ -39,29 +39,31 @@ C_SOURCES =  \
 Core/Src/Dev_Inf.c \
 Core/Src/Loader_Src.c \
 Core/Src/main.c \
+Core/Src/gpio.c \
+Core/Src/quadspi.c \
 Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_it.c \
 Core/Src/system_stm32l4xx.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c \
+Driver/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -144,14 +146,16 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 #######################################
 # link script
 LDSCRIPT = linker.ld
+LDSCRIPT_TEST = test.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS_TEST = $(MCU) -specs=nano.specs -T$(LDSCRIPT_TEST) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).stldr $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET).stldr $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/$(TARGET)_test.elf $(BUILD_DIR)/$(TARGET)_test.hex $(BUILD_DIR)/$(TARGET)_test.bin 
 
 
 #######################################
@@ -174,12 +178,23 @@ $(BUILD_DIR)/$(TARGET).stldr: $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
-$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.stldr | $(BUILD_DIR)
+$(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).stldr | $(BUILD_DIR)
 	$(HEX) $< $@
 	
-$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.stldr | $(BUILD_DIR)
+$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).stldr | $(BUILD_DIR)
 	$(BIN) $< $@	
+
+$(BUILD_DIR)/$(TARGET)_test.elf: $(OBJECTS) Makefile
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	$(SZ) $@
+
+$(BUILD_DIR)/$(TARGET)_test.hex: $(BUILD_DIR)/$(TARGET)_test.elf | $(BUILD_DIR)
+	$(HEX) $< $@
 	
+$(BUILD_DIR)/$(TARGET)_test.bin: $(BUILD_DIR)/$(TARGET)_test.elf | $(BUILD_DIR)
+	$(BIN) $< $@	
+
+
 $(BUILD_DIR):
 	mkdir $@		
 

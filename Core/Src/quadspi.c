@@ -1,4 +1,5 @@
 #include "main.h"
+#include "quadspi.h"
 /* USER CODE BEGIN 0 */
 static uint8_t QSPI_WriteEnable(void);
 static uint8_t QSPI_AutoPollingMemReady(void);
@@ -6,6 +7,38 @@ static uint8_t QSPI_Configuration(void);
 static uint8_t QSPI_ResetChip(void);
 /* USER CODE END 0 */
 
+QSPI_HandleTypeDef hqspi;
+/**
+  * @brief QUADSPI Initialization Function
+  * @param None
+  * @retval None
+  */
+void MX_QUADSPI_Init(void)
+{
+
+    /* USER CODE BEGIN QUADSPI_Init 0 */
+
+    /* USER CODE END QUADSPI_Init 0 */
+
+    /* USER CODE BEGIN QUADSPI_Init 1 */
+
+    /* USER CODE END QUADSPI_Init 1 */
+    /* QUADSPI parameter configuration*/
+    hqspi.Instance = QUADSPI;
+    hqspi.Init.ClockPrescaler = 1;                              // ClockPrescaler = 0,QSPI clock = FAHB / 1 = 80MHz / 1 = 80MHz
+    hqspi.Init.FifoThreshold = 1;                               // FIFO when 8 more bytes written or read
+    hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE; // don't sample the data read from memory half-clock cycle later
+    hqspi.Init.FlashSize = 25;                                  // flash size = 2**(25+1) = 2**26 = 67108864 = 64 Mbytes
+    hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_3_CYCLE;  // the read and wirte command should CS# high in 30ns
+    hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;                   // clock stay low bwteen two command
+    if (HAL_QSPI_Init(&hqspi) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    /* USER CODE BEGIN QUADSPI_Init 2 */
+
+    /* USER CODE END QUADSPI_Init 2 */
+}
 
 /* USER CODE BEGIN 1 */
 
