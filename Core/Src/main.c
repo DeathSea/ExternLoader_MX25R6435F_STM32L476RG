@@ -104,14 +104,14 @@ main(void) {
     for (var = 0; var < MEMORY_SECTOR_SIZE; var++) {
         buffer_test[var] = (var & 0xFF);
     }
-    for (var = 0; var < SECTORS_COUNT; var++) {
-        if (CSP_QSPI_EraseSector(var * MEMORY_SECTOR_SIZE, (var + 1) * MEMORY_SECTOR_SIZE - 1) != HAL_OK) {
-            while (1) {}
-        }
-        if (CSP_QSPI_WriteMemory(buffer_test, var * MEMORY_SECTOR_SIZE, sizeof(buffer_test)) != HAL_OK) {
-            while (1) {}
-        }
-    }
+    // for (var = 0; var < SECTORS_COUNT; var++) {
+    //     if (CSP_QSPI_EraseSector(var * MEMORY_SECTOR_SIZE, (var + 1) * MEMORY_SECTOR_SIZE - 1) != HAL_OK) {
+    //         while (1) {}
+    //     }
+    //     if (CSP_QSPI_WriteMemory(buffer_test, var * MEMORY_SECTOR_SIZE, sizeof(buffer_test)) != HAL_OK) {
+    //         while (1) {}
+    //     }
+    // }
     if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK) {
         while (1) {}
     }

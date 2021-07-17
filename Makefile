@@ -152,7 +152,7 @@ LDSCRIPT_TEST = test.ld
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
-LDFLAGS_TEST = $(MCU) -specs=nano.specs -T$(LDSCRIPT_TEST) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS_TEST = $(MCU) -specs=nano.specs -T$(LDSCRIPT_TEST) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET)_test.map,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).stldr $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/$(TARGET)_test.elf $(BUILD_DIR)/$(TARGET)_test.hex $(BUILD_DIR)/$(TARGET)_test.bin 
@@ -185,7 +185,7 @@ $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).stldr | $(BUILD_DIR)
 	$(BIN) $< $@	
 
 $(BUILD_DIR)/$(TARGET)_test.elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	$(CC) $(OBJECTS) $(LDFLAGS_TEST) -o $@
 	$(SZ) $@
 
 $(BUILD_DIR)/$(TARGET)_test.hex: $(BUILD_DIR)/$(TARGET)_test.elf | $(BUILD_DIR)
