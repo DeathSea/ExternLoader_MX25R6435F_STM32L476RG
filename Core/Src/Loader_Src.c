@@ -13,7 +13,7 @@ extern void SystemClock_Config(void);
  * @retval  LOADER_FAIL = 0 : Operation failed
  */
 int
-Init(void) {
+Init(uint8_t configureMemoryMappedMode) {
 
     *(uint32_t*)0xE000EDF0 = 0xA05F0000; //enable interrupts in debug
 
@@ -48,10 +48,11 @@ Init(void) {
         return LOADER_FAIL;
     }
 
-
-    if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK) {
-        __set_PRIMASK(1); //disable interrupts
-        return LOADER_FAIL;
+    if (!configureMemoryMappedMode) {
+        if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK) {
+            __set_PRIMASK(1); //disable interrupts
+            return LOADER_FAIL;
+        }
     }
 
 
