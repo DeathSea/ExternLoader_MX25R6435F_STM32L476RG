@@ -22,7 +22,7 @@ void MX_QUADSPI_Init(void);
 /*MX25R6435F memory parameters*/
 #define MEMORY_FLASH_SIZE               0x800000  /* 64 MBits => 8MBytes */
 #define MEMORY_SECTOR_SIZE              0x1000    /* 2048 subsectors of 4kBytes */
-#define MEMORY_PAGE_SIZE                0x100     /* 128 pages of 256 bytes */
+#define MEMORY_PAGE_SIZE                0x1000     /* 128 pages of 256 bytes */
 
 
 /*MX25R6435F commands */

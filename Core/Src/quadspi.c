@@ -25,8 +25,8 @@ void MX_QUADSPI_Init(void)
     /* USER CODE END QUADSPI_Init 1 */
     /* QUADSPI parameter configuration*/
     hqspi.Instance = QUADSPI;
-    hqspi.Init.ClockPrescaler = 4;                              // ClockPrescaler = 0,QSPI clock = FAHB / 1 = 80MHz / 1 = 80MHz
-    hqspi.Init.FifoThreshold = 16;                               // FIFO when 8 more bytes written or read
+    hqspi.Init.ClockPrescaler = 3;                              // ClockPrescaler = 0,QSPI clock = FAHB / 1 = 80MHz / 1 = 80MHz
+    hqspi.Init.FifoThreshold = 1;                               // FIFO when 8 more bytes written or read
     hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE; // don't sample the data read from memory half-clock cycle later
     hqspi.Init.FlashSize = 25;                                  // flash size = 2**(25+1) = 2**26 = 67108864 = 64 Mbytes
     hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_3_CYCLE;  // the read and wirte command should CS# high in 30ns
@@ -395,7 +395,7 @@ uint8_t CSP_QSPI_EnableMemoryMappedMode(void) {
 	sCommand.AddressMode = QSPI_ADDRESS_4_LINES;
 	sCommand.DataMode = QSPI_DATA_4_LINES;
 	sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_4_LINES;
-	sCommand.AlternateBytes = 0x5A;
+	sCommand.AlternateBytes = 0xF0;
 	sCommand.AlternateBytesSize = QSPI_ALTERNATE_BYTES_8_BITS;
 	sCommand.NbData = 0;
 	sCommand.Address = 0;
