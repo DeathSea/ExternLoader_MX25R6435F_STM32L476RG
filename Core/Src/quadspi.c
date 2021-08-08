@@ -61,12 +61,17 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* qspiHandle)
     GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_11;
+    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_10;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_11;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 
   /* USER CODE BEGIN QUADSPI_MspInit 1 */
 
@@ -468,9 +473,17 @@ uint8_t CSP_QSPI_WriteMemory(uint8_t* buffer, uint32_t address,uint32_t buffer_s
 	sCommand.DdrMode = QSPI_DDR_MODE_DISABLE;
 	sCommand.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
 	sCommand.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+#ifdef ONE_LINE_WRITE
+	// one line
 	sCommand.Instruction = PAGE_PROG_CMD;
 	sCommand.AddressMode = QSPI_ADDRESS_1_LINE;
 	sCommand.DataMode = QSPI_DATA_1_LINE;
+#else
+	// four lines
+	sCommand.Instruction = QUAD_PAGE_PROG_CMD;
+	sCommand.AddressMode = QSPI_ADDRESS_4_LINES;
+	sCommand.DataMode = QSPI_DATA_4_LINES;
+#endif
 	sCommand.NbData = buffer_size;
 	sCommand.Address = address;
 	sCommand.DummyCycles = 0;
@@ -583,7 +596,7 @@ uint8_t CSP_QSPI_EnableMemoryMappedMode(void) {
 	sCommand.NbData = 0;
 	sCommand.Address = 0;
 	sCommand.Instruction = QUAD_INOUT_READ_CMD;
-	sCommand.DummyCycles = MX25R6435F_DUMMY_CYCLES_READ;
+	sCommand.DummyCycles = MX25R6435F_DUMMY_CYCLES_READ_QUAD;
 
 	sMemMappedCfg.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
 

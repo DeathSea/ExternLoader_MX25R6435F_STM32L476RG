@@ -48,12 +48,12 @@ Init(uint8_t configureMemoryMappedMode) {
         return LOADER_FAIL;
     }
 
-    if (!configureMemoryMappedMode) {
+   // if (!configureMemoryMappedMode) {
         if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK) {
             __set_PRIMASK(1); //disable interrupts
             return LOADER_FAIL;
         }
-    }
+    //}
 
 
     __set_PRIMASK(1); //disable interrupts
